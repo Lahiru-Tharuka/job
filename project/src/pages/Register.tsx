@@ -5,20 +5,19 @@ import { User, Mail, Lock, ArrowRight } from "lucide-react";
 import Button from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
 
-const Login = () => {
+const Register = () => {
   const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigateTo = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // In a real app you'd verify credentials here
-    login(email, role);
+    register(email, role);
     setLoading(false);
     navigateTo("/");
   };
@@ -32,7 +31,6 @@ const Login = () => {
         className="max-w-md w-full relative"
       >
         <div className="glass rounded-3xl p-8 shadow-2xl border border-white/20">
-          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -43,21 +41,21 @@ const Login = () => {
               <User className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
-              Welcome Back
+              Create Account
             </h2>
             <p className="text-slate-600 dark:text-slate-400 mt-2">
-              Sign in to your account to continue
+              Join JobScape to find your next opportunity
             </p>
           </motion.div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleRegister} className="space-y-6">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
             >
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Login As
+                Register As
               </label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -67,8 +65,8 @@ const Login = () => {
                   className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200"
                 >
                   <option value="">Select Role</option>
-                  <option value="Employer">Login as an Employer</option>
-                  <option value="Job Seeker">Login as a Job Seeker</option>
+                  <option value="Employer">Register as an Employer</option>
+                  <option value="Job Seeker">Register as a Job Seeker</option>
                 </select>
               </div>
             </motion.div>
@@ -105,7 +103,7 @@ const Login = () => {
                 <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="Create a password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200"
@@ -132,26 +130,25 @@ const Login = () => {
                   </div>
                 ) : (
                   <>
-                    Sign In
+                    Create Account
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </>
                 )}
               </Button>
 
               <div className="text-center">
-                <span className="text-slate-600 dark:text-slate-400">Don't have an account? </span>
+                <span className="text-slate-600 dark:text-slate-400">Already have an account? </span>
                 <Link
-                  to="/register"
+                  to="/login"
                   className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors duration-200"
                 >
-                  Register now
+                  Login
                 </Link>
               </div>
             </motion.div>
           </form>
         </div>
 
-        {/* Decorative elements */}
         <div className="absolute -top-10 -left-10 w-20 h-20 bg-blue-500/10 rounded-full blur-xl" />
         <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-500/10 rounded-full blur-xl" />
       </motion.div>
@@ -159,5 +156,5 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
 
