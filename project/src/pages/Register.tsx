@@ -14,12 +14,17 @@ const Register = () => {
   const { register } = useAuth();
   const navigateTo = useNavigate();
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    register(email, role);
-    setLoading(false);
-    navigateTo("/");
+    try {
+      await register(email, password, role);
+      navigateTo("/");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
