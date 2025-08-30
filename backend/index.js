@@ -8,15 +8,74 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Seed some jobs if table empty
+// Seed 100 different jobs if table empty
 const seedJobs = () => {
   db.get('SELECT COUNT(*) as count FROM jobs', (err, row) => {
     if (row && row.count === 0) {
-      const stmt = db.prepare('INSERT INTO jobs (title, companyName, location, salary, jobPostedOn, hiringMultipleCandidates, niche) VALUES (?, ?, ?, ?, ?, ?, ?)');
+      const stmt = db.prepare(
+        'INSERT INTO jobs (title, companyName, location, salary, jobPostedOn, hiringMultipleCandidates, niche) VALUES (?, ?, ?, ?, ?, ?, ?)'
+      );
       const now = new Date().toISOString();
-      stmt.run('Frontend Developer', 'TechCorp', 'Colombo', 150000, now, 'Yes', 'Web Development');
-      stmt.run('Backend Engineer', 'CodeWorks', 'Kandy', 140000, now, 'No', 'Software Development');
-      stmt.run('Cloud Architect', 'SkyNet', 'Galle', 180000, now, 'Yes', 'Cloud Computing');
+
+      const roles = [
+        'Software Engineer',
+        'Data Scientist',
+        'Product Manager',
+        'UX Designer',
+        'QA Engineer',
+        'DevOps Engineer',
+        'System Administrator',
+        'Database Administrator',
+        'Network Engineer',
+        'Security Analyst',
+        'Technical Writer',
+        'Business Analyst',
+        'Scrum Master',
+        'Graphic Designer',
+        'Web Developer',
+        'Mobile Developer',
+        'AI Researcher',
+        'Machine Learning Engineer',
+        'Cloud Architect',
+        'IT Support Specialist'
+      ];
+      const levels = ['Intern', 'Junior', 'Mid-level', 'Senior', 'Lead'];
+      const companies = [
+        'TechCorp',
+        'CodeWorks',
+        'SkyNet',
+        'CloudNine',
+        'InnovateX',
+        'DataMinds',
+        'NextGen',
+        'DevMasters',
+        'AlphaBeta',
+        'QuantumSoft'
+      ];
+      const locations = [
+        'Colombo',
+        'Kandy',
+        'Galle',
+        'Jaffna',
+        'Negombo',
+        'Matara',
+        'Kurunegala',
+        'Batticaloa',
+        'Anuradhapura',
+        'Trincomalee'
+      ];
+
+      roles.forEach((role, i) => {
+        levels.forEach((level, j) => {
+          const title = `${level} ${role}`;
+          const company = companies[(i + j) % companies.length];
+          const location = locations[(i * levels.length + j) % locations.length];
+          const salary = 50000 + ((i * levels.length + j) * 1000);
+          const hiring = (i + j) % 2 === 0 ? 'Yes' : 'No';
+          const niche = role;
+          stmt.run(title, company, location, salary, now, hiring, niche);
+        });
+      });
       stmt.finalize();
     }
   });
