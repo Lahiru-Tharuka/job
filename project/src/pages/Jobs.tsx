@@ -2,17 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, MapPin, Filter, Calendar, DollarSign, Building2 } from "lucide-react";
 import Button from "../components/ui/Button";
-
-interface Job {
-  id: number;
-  title: string;
-  companyName: string;
-  location: string;
-  salary: number;
-  jobPostedOn: string;
-  hiringMultipleCandidates: "Yes" | "No";
-  niche: string;
-}
+import { Job } from "../types";
+import { dummyJobs } from "../data/jobs";
 
 const Jobs = () => {
   const [city, setCity] = useState("All");
@@ -71,13 +62,8 @@ const Jobs = () => {
   ];
 
   useEffect(() => {
-    const fetchJobs = async () => {
-      const res = await fetch("http://localhost:3001/jobs");
-      const data = await res.json();
-      setJobs(data);
-      setFilteredJobs(data);
-    };
-    fetchJobs();
+    setJobs(dummyJobs);
+    setFilteredJobs(dummyJobs);
   }, []);
 
   const handleSearch = () => {
