@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, MapPin, Filter, Calendar, DollarSign, Building2 } from "lucide-react";
 import Button from "../components/ui/Button";
 
 interface Job {
-  _id: string;
+  id: number;
   title: string;
   companyName: string;
   location: string;
@@ -14,45 +14,13 @@ interface Job {
   niche: string;
 }
 
-const jobsData: Job[] = [
-  {
-    _id: "1",
-    title: "Frontend Developer",
-    companyName: "TechCorp",
-    location: "Colombo",
-    salary: 150000,
-    jobPostedOn: new Date().toISOString(),
-    hiringMultipleCandidates: "Yes",
-    niche: "Web Development",
-  },
-  {
-    _id: "2",
-    title: "Backend Engineer",
-    companyName: "CodeWorks",
-    location: "Kandy",
-    salary: 140000,
-    jobPostedOn: new Date().toISOString(),
-    hiringMultipleCandidates: "No",
-    niche: "Software Development",
-  },
-  {
-    _id: "3",
-    title: "Cloud Architect",
-    companyName: "SkyNet",
-    location: "Galle",
-    salary: 180000,
-    jobPostedOn: new Date().toISOString(),
-    hiringMultipleCandidates: "Yes",
-    niche: "Cloud Computing",
-  },
-];
-
 const Jobs = () => {
   const [city, setCity] = useState("All");
   const [niche, setNiche] = useState("All");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobsData);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
 
   const cities = [
     "All",
@@ -102,8 +70,18 @@ const Jobs = () => {
     "IT Consulting",
   ];
 
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const res = await fetch("http://localhost:3001/jobs");
+      const data = await res.json();
+      setJobs(data);
+      setFilteredJobs(data);
+    };
+    fetchJobs();
+  }, []);
+
   const handleSearch = () => {
-    const filtered = jobsData.filter((job) => {
+    const filtered = jobs.filter((job) => {
       const matchCity = city === "All" || job.location === city;
       const matchNiche = niche === "All" || job.niche === niche;
       const keyword = searchKeyword.toLowerCase();
@@ -262,7 +240,7 @@ const Jobs = () => {
               {filteredJobs && filteredJobs.length > 0 ? (
                 filteredJobs.map((job, index) => (
                   <motion.div
-                    key={job._id}
+                    key={job.id}
                     variants={itemVariants}
                     whileHover={{
                       y: -5,
@@ -323,7 +301,7 @@ const Jobs = () => {
 
                     <div className="mt-6 flex justify-end">
                       <Button
-                        href={`/post/application/${job._id}`}
+                        href={`/post/application/${job.id}`}
                         size="sm"
                         className="group-hover:shadow-lg transition-shadow duration-200"
                       >

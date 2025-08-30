@@ -6,7 +6,6 @@ import Button from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-  const [role, setRole] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -14,13 +13,17 @@ const Login = () => {
   const { login } = useAuth();
   const navigateTo = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // In a real app you'd verify credentials here
-    login(email, role);
-    setLoading(false);
-    navigateTo("/");
+    try {
+      await login(email, password);
+      navigateTo("/");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,28 +60,6 @@ const Login = () => {
               transition={{ delay: 0.3, duration: 0.6 }}
             >
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Login As
-              </label>
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
-                <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200"
-                >
-                  <option value="">Select Role</option>
-                  <option value="Employer">Login as an Employer</option>
-                  <option value="Job Seeker">Login as a Job Seeker</option>
-                </select>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -96,7 +77,7 @@ const Login = () => {
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
             >
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Password
