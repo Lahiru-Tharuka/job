@@ -1,47 +1,119 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { toast } from "react-toastify";
-import { clearAllJobErrors, fetchJobs } from "../store/slices/jobSlice";
-import Spinner from "../components/Spinner";
 import { Search, MapPin, Filter, Calendar, DollarSign, Building2 } from "lucide-react";
-import { Link } from "react-router-dom";
 import Button from "../components/ui/Button";
 
+interface Job {
+  _id: string;
+  title: string;
+  companyName: string;
+  location: string;
+  salary: number;
+  jobPostedOn: string;
+  hiringMultipleCandidates: "Yes" | "No";
+  niche: string;
+}
+
+const jobsData: Job[] = [
+  {
+    _id: "1",
+    title: "Frontend Developer",
+    companyName: "TechCorp",
+    location: "Colombo",
+    salary: 150000,
+    jobPostedOn: new Date().toISOString(),
+    hiringMultipleCandidates: "Yes",
+    niche: "Web Development",
+  },
+  {
+    _id: "2",
+    title: "Backend Engineer",
+    companyName: "CodeWorks",
+    location: "Kandy",
+    salary: 140000,
+    jobPostedOn: new Date().toISOString(),
+    hiringMultipleCandidates: "No",
+    niche: "Software Development",
+  },
+  {
+    _id: "3",
+    title: "Cloud Architect",
+    companyName: "SkyNet",
+    location: "Galle",
+    salary: 180000,
+    jobPostedOn: new Date().toISOString(),
+    hiringMultipleCandidates: "Yes",
+    niche: "Cloud Computing",
+  },
+];
+
 const Jobs = () => {
-  const [city, setCity] = useState("");
-  const [niche, setNiche] = useState("");
+  const [city, setCity] = useState("All");
+  const [niche, setNiche] = useState("All");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-
-  const { jobs, loading, error } = useSelector((state) => state.jobs);
-  const dispatch = useDispatch();
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>(jobsData);
 
   const cities = [
-    "All", "Colombo", "Kandy", "Galle", "Jaffna", "Negombo", "Anuradhapura",
-    "Ratnapura", "Trincomalee", "Batticaloa", "Matara", "Kurunegala", "Badulla",
-    "Puttalam", "Nuwara Eliya", "Polonnaruwa", "Ampara", "Hambantota", "Kalutara",
-    "Mannar", "Kilinochchi",
+    "All",
+    "Colombo",
+    "Kandy",
+    "Galle",
+    "Jaffna",
+    "Negombo",
+    "Anuradhapura",
+    "Ratnapura",
+    "Trincomalee",
+    "Batticaloa",
+    "Matara",
+    "Kurunegala",
+    "Badulla",
+    "Puttalam",
+    "Nuwara Eliya",
+    "Polonnaruwa",
+    "Ampara",
+    "Hambantota",
+    "Kalutara",
+    "Mannar",
+    "Kilinochchi",
   ];
 
   const nichesArray = [
-    "All", "Software Development", "Web Development", "Cybersecurity", "Data Science",
-    "Artificial Intelligence", "Cloud Computing", "DevOps", "Mobile App Development",
-    "Blockchain", "Database Administration", "Network Administration", "UI/UX Design",
-    "Game Development", "IoT (Internet of Things)", "Big Data", "Machine Learning",
-    "IT Project Management", "IT Support and Helpdesk", "Systems Administration", "IT Consulting",
+    "All",
+    "Software Development",
+    "Web Development",
+    "Cybersecurity",
+    "Data Science",
+    "Artificial Intelligence",
+    "Cloud Computing",
+    "DevOps",
+    "Mobile App Development",
+    "Blockchain",
+    "Database Administration",
+    "Network Administration",
+    "UI/UX Design",
+    "Game Development",
+    "IoT (Internet of Things)",
+    "Big Data",
+    "Machine Learning",
+    "IT Project Management",
+    "IT Support and Helpdesk",
+    "Systems Administration",
+    "IT Consulting",
   ];
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(clearAllJobErrors());
-    }
-    dispatch(fetchJobs(city, niche, searchKeyword));
-  }, [dispatch, error, city, niche]);
-
   const handleSearch = () => {
-    dispatch(fetchJobs(city, niche, searchKeyword));
+    const filtered = jobsData.filter((job) => {
+      const matchCity = city === "All" || job.location === city;
+      const matchNiche = niche === "All" || job.niche === niche;
+      const keyword = searchKeyword.toLowerCase();
+      const matchKeyword =
+        keyword === "" ||
+        job.title.toLowerCase().includes(keyword) ||
+        job.companyName.toLowerCase().includes(keyword);
+      return matchCity && matchNiche && matchKeyword;
+    });
+    setFilteredJobs(filtered);
   };
 
   const containerVariants = {
@@ -66,8 +138,6 @@ const Jobs = () => {
       },
     },
   };
-
-  if (loading) return <Spinner />;
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
@@ -130,7 +200,7 @@ const Jobs = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className={`lg:w-80 ${showFilters ? 'block' : 'hidden lg:block'}`}
+            className={`lg:w-80 ${showFilters ? "block" : "hidden lg:block"}`}
           >
             <div className="sticky top-24 space-y-6">
               <div className="card-modern p-6">
@@ -138,7 +208,7 @@ const Jobs = () => {
                   <Filter className="w-5 h-5 mr-2" />
                   Filter Jobs
                 </h3>
-                
+
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
@@ -152,7 +222,9 @@ const Jobs = () => {
                         className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                       >
                         {cities.map((city, index) => (
-                          <option key={index} value={city}>{city}</option>
+                          <option key={index} value={city}>
+                            {city}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -168,7 +240,9 @@ const Jobs = () => {
                       className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                     >
                       {nichesArray.map((niche, index) => (
-                        <option key={index} value={niche}>{niche}</option>
+                        <option key={index} value={niche}>
+                          {niche}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -185,14 +259,14 @@ const Jobs = () => {
               animate="visible"
               className="grid grid-cols-1 md:grid-cols-2 gap-6"
             >
-              {jobs && jobs.length > 0 ? (
-                jobs.map((job, index) => (
+              {filteredJobs && filteredJobs.length > 0 ? (
+                filteredJobs.map((job, index) => (
                   <motion.div
                     key={job._id}
                     variants={itemVariants}
-                    whileHover={{ 
+                    whileHover={{
                       y: -5,
-                      transition: { type: "spring", stiffness: 300, damping: 20 }
+                      transition: { type: "spring", stiffness: 300, damping: 20 },
                     }}
                     className="card-modern p-6 group relative overflow-hidden"
                   >
@@ -208,9 +282,11 @@ const Jobs = () => {
                             : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
                         }`}
                       >
-                        {job.hiringMultipleCandidates === "Yes" ? "Multiple Positions" : "Single Position"}
+                        {job.hiringMultipleCandidates === "Yes"
+                          ? "Multiple Positions"
+                          : "Single Position"}
                       </motion.span>
-                      
+
                       <motion.div
                         whileHover={{ scale: 1.1 }}
                         className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
@@ -221,7 +297,7 @@ const Jobs = () => {
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
                         {job.title}
                       </h3>
-                      
+
                       <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-400">
                         <Building2 className="w-4 h-4" />
                         <span className="font-medium">{job.companyName}</span>
@@ -246,7 +322,7 @@ const Jobs = () => {
                     </div>
 
                     <div className="mt-6 flex justify-end">
-                      <Button 
+                      <Button
                         href={`/post/application/${job._id}`}
                         size="sm"
                         className="group-hover:shadow-lg transition-shadow duration-200"
@@ -286,3 +362,4 @@ const Jobs = () => {
 };
 
 export default Jobs;
+

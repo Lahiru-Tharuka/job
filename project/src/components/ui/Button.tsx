@@ -40,8 +40,6 @@ const Button: React.FC<ButtonProps> = ({
 
   const classes = `${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`;
 
-  const MotionComponent = motion.button;
-
   if (to) {
     return (
       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

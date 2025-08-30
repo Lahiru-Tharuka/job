@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "./components/Navbar";
@@ -10,10 +10,6 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import PostApplication from "./pages/PostApplication";
 import Register from "./pages/Register";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useDispatch } from "react-redux";
-import { getUser } from "./store/slices/userSlice";
 
 const pageVariants = {
   initial: {
@@ -57,12 +53,6 @@ const AnimatedRoute = ({ children }) => {
 };
 
 const App = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       <Router>
@@ -79,12 +69,6 @@ const App = () => {
           </Routes>
         </AnimatedRoute>
         <Footer />
-        <ToastContainer 
-          position="top-right" 
-          theme="colored"
-          toastClassName="!bg-white !text-slate-800 dark:!bg-slate-800 dark:!text-white shadow-xl border border-slate-200 dark:border-slate-700"
-          progressClassName="!bg-gradient-to-r !from-blue-500 !to-purple-500"
-        />
       </Router>
     </div>
   );

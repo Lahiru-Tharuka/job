@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon, Briefcase } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
-  const { isAuthenticated } = useSelector((state) => state.user);
+  const { user, logout } = useAuth();
+  const isAuthenticated = !!user;
   const location = useLocation();
 
   useEffect(() => {
@@ -76,6 +77,16 @@ const Navbar = () => {
                 </Link>
               </motion.div>
             ))}
+            {isAuthenticated && (
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ y: 0 }}
+                onClick={logout}
+                className="px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+              >
+                Logout
+              </motion.button>
+            )}
           </div>
 
           {/* Theme Toggle & Mobile Menu */}
@@ -178,6 +189,23 @@ const Navbar = () => {
                     </Link>
                   </motion.div>
                 ))}
+                {isAuthenticated && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: navLinks.length * 0.1 }}
+                  >
+                    <button
+                      onClick={() => {
+                        setIsOpen(false);
+                        logout();
+                      }}
+                      className="w-full text-left block px-3 py-2 rounded-lg text-base font-medium text-red-600 dark:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    >
+                      Logout
+                    </button>
+                  </motion.div>
+                )}
               </div>
             </motion.div>
           )}

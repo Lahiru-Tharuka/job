@@ -147,11 +147,11 @@ const Hero = () => {
                 Post a Job
               </Button>
             </motion.div>
-          </motion.div>
-        </div>
-      </div>
+              </motion.div>
+            </motion.div>
+          </div>
 
-      {/* Floating particles */}
+        {/* Floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(6)].map((_, i) => (
           <motion.div
@@ -177,4 +177,4 @@ const Hero = () => {
   );
 };
 
-export default Navbar;
+export default Hero;
